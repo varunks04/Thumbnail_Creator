@@ -1,0 +1,3 @@
+C:/Users/ksvar/Desktop/PC/build/CMakeFiles/thumbnail_gen.dir
+C:/Users/ksvar/Desktop/PC/build/CMakeFiles/edit_cache.dir
+C:/Users/ksvar/Desktop/PC/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,95 @@
+# PowerShell script to build and run thumbnail_gen from C:\Users\ksvar\Desktop\PC
+# Save as run.txt or run.ps1; run in PowerShell.
+
+Set-Location -Path "C:\Users\ksvar\Desktop\PC"
+
+# Download headers if missing
+if (-Not (Test-Path ".\include\stb_image.h")) {
+  Write-Host "Downloading required stb headers..."
+  if (Test-Path ".\download_headers.ps1") {
+    & .\download_headers.ps1
+  } else {
+    Write-Error "download_headers.ps1 not found. Please add stb headers to .\include\ or provide the script."
+    exit 1
+  }
+}
+
+# Create build dir and build (Release)
+if (-Not (Test-Path ".\build")) { New-Item -ItemType Directory -Path ".\build" | Out-Null }
+Set-Location -Path ".\build"
+
+cmake .. 
+if ($LASTEXITCODE -ne 0) { Write-Error "cmake configuration failed."; exit 1 }
+
+cmake --build . --config Release
+if ($LASTEXITCODE -ne 0) { Write-Error "Build failed."; exit 1 }
+
+# Locate executable
+$exe = Get-ChildItem -Path .. -Recurse -Filter thumbnail_gen.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+if (-not $exe) {
+  Write-Error "thumbnail_gen.exe not found. Build may have failed."
+  exit 1
+}
+$exePath = $exe.FullName
+
+# Prepare input/output
+Set-Location -Path ".."
+$inputDir = ".\data"
+$outDir = ".\output\thumbnails"
+if (-Not (Test-Path $inputDir)) { Write-Error "Input folder '$inputDir' not found."; exit 1 }
+if (-Not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir -Force | Out-Null }
+
+# Run program (adjust flags as needed)
+Write-Host "Running: $exePath -i $inputDir -o $outDir"
+& $exePath -i $inputDir -o $outDir
+if ($LASTEXITCODE -ne 0) { Write-Error "Program exited with code $LASTEXITCODE"; exit $LASTEXITCODE }
+
+Write-Host "Done. Thumbnails saved to: $outDir"
+```// filepath: c:\Users\ksvar\Desktop\PC\run.txt
+# PowerShell script to build and run thumbnail_gen from C:\Users\ksvar\Desktop\PC
+# Save as run.txt or run.ps1; run in PowerShell.
+
+Set-Location -Path "C:\Users\ksvar\Desktop\PC"
+
+# Download headers if missing
+if (-Not (Test-Path ".\include\stb_image.h")) {
+  Write-Host "Downloading required stb headers..."
+  if (Test-Path ".\download_headers.ps1") {
+    & .\download_headers.ps1
+  } else {
+    Write-Error "download_headers.ps1 not found. Please add stb headers to .\include\ or provide the script."
+    exit 1
+  }
+}
+
+# Create build dir and build (Release)
+if (-Not (Test-Path ".\build")) { New-Item -ItemType Directory -Path ".\build" | Out-Null }
+Set-Location -Path ".\build"
+
+cmake .. 
+if ($LASTEXITCODE -ne 0) { Write-Error "cmake configuration failed."; exit 1 }
+
+cmake --build . --config Release
+if ($LASTEXITCODE -ne 0) { Write-Error "Build failed."; exit 1 }
+
+# Locate executable
+$exe = Get-ChildItem -Path .. -Recurse -Filter thumbnail_gen.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+if (-not $exe) {
+  Write-Error "thumbnail_gen.exe not found. Build may have failed."
+  exit 1
+}
+$exePath = $exe.FullName
+
+# Prepare input/output
+Set-Location -Path ".."
+$inputDir = ".\data"
+$outDir = ".\output\thumbnails"
+if (-Not (Test-Path $inputDir)) { Write-Error "Input folder '$inputDir' not found."; exit 1 }
+if (-Not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir -Force | Out-Null }
+
+# Run program (adjust flags as needed)
+Write-Host "Running: $exePath -i $inputDir -o $outDir"
+& $exePath -i $inputDir -o $outDir
+if ($LASTEXITCODE -ne 0) { Write-Error "Program exited with code $LASTEXITCODE"; exit $LASTEXITCODE }
+
+Write-Host "Done. Thumbnails saved to: $outDir"
